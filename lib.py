@@ -1,6 +1,8 @@
 import numpy
 from stl import mesh
 
+##### Basic STL Operations #####
+
 def load_stl(file_path):
     #Load an STL file and return the mesh object
     return mesh.Mesh.from_file(file_path)
@@ -8,6 +10,10 @@ def load_stl(file_path):
 def save_stl(mesh_obj, file_path):
     #Save the mesh object to an STL file
     mesh_obj.save(file_path)
+
+def create_empty_mesh(num_facets):
+    #Create an empty mesh with a specified number of facets
+    return mesh.Mesh(numpy.zeros(num_facets, dtype=mesh.Mesh.dtype))
 
 def print_mesh_info(mesh_obj):
     #Print basic information about the mesh
@@ -24,6 +30,8 @@ def detailed_print(mesh_obj):
         print(f"  Vertex 2: {vector[1]}")
         print(f"  Vertex 3: {vector[2]}")
 
+##### Manipulation Functions #####
+
 def scale_mesh(mesh_obj, scale_factor):
     #Scale the mesh by a given factor
     mesh_obj.vectors *= scale_factor
@@ -39,3 +47,26 @@ def translate_mesh(mesh_obj, translation_vector):
 def rotate_mesh(mesh_obj, axis, radians):
     #Rotate the mesh using a given rotation matrix
     return mesh_obj.rotate(axis,radians)
+
+##### Generation Functions #####
+
+def generate_cube(size):
+    cube = create_empty_mesh(12)  # A cube has 12 triangular facets
+    
+    cube_faces = numpy.array([
+        [[0,0,0], [1, 0, 0], [1, 1, 0], [0, 1, 0]],
+        [[0,0,0], [1, 0, 0], [1, 0, 1], [0, 0, 1]],
+        [[0,0,0], [0, 1, 0], [0, 1, 1], [0, 0, 1]],
+        [[1,1,1], [0, 1, 1], [0, 0, 1], [1, 0, 1]],
+        [[1,1,1], [0, 1, 1], [0, 1, 0], [1, 1, 0]],
+        [[1,1,1], [1, 0, 1], [1, 0, 0], [1, 1, 0]]])
+
+    for face in cube_faces:
+        face[0] = face[0] * size
+        face[1] = face[1] * size
+        face[2] = face[2] * size
+        face[3] = face[3] * size
+        
+    print(cube_faces)
+
+    return cube
