@@ -15,7 +15,29 @@ def print_mesh_info(mesh_obj):
     print(f"Bounding box min: {mesh_obj.min_}")
     print(f"Bounding box max: {mesh_obj.max_}")
 
-#load_stl("not_valid.stl")    
-mesh_data = load_stl("./input/cube_10mm.stl")
-print_mesh_info(mesh_data)
-save_stl(mesh_data, "./out/cube_10mm_copy.stl")
+def detailed_print(mesh_obj):
+    #Print detailed information about each facet
+    print_mesh_info(mesh_obj)
+    for i, vector in enumerate(mesh_obj.vectors):
+        print(f"Facet {i}:")
+        print(f"  Vertex 1: {vector[0]}")
+        print(f"  Vertex 2: {vector[1]}")
+        print(f"  Vertex 3: {vector[2]}")
+
+def scale_mesh(mesh_obj, scale_factor):
+    #Scale the mesh by a given factor
+    mesh_obj.vectors *= scale_factor
+
+
+
+###############################################################################
+
+def main():
+    mesh_data = load_stl("./input/cube_10mm.stl")
+    detailed_print(mesh_data)
+    scale_mesh(mesh_data, 2.0)
+    detailed_print(mesh_data)
+    save_stl(mesh_data, "./out/cube_20mm_copy.stl")
+
+if __name__ == "__main__":
+    main()
