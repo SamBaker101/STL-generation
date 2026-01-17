@@ -4,7 +4,7 @@ Using python to generate and manipulate STL files
 ## Roadmap
 - [x] Open and Close STL Files
 - [x] Scale an STL file
-- [ ] Rotate an STL file
+- [x] Rotate an STL file
 - [ ] Generate simple shapes (Cube, Pyramid)
 - [ ] Generate a sphere at a given resolution
 - [ ] Add champfers to simple shapes
