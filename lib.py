@@ -93,5 +93,13 @@ def generate_prism(base_sides, side_length, height):
         
     top_vertices = base_vertices + numpy.array([0, 0, height]) 
     
-    print(base_vertices)
-    print(top_vertices)
+    for i in range(base_sides - 2):
+        prism.vectors[i]                = [base_vertices[0], base_vertices[i + 1], base_vertices[i + 2]]
+        prism.vectors[i + base_sides-2] = prism.vectors[i] + numpy.array([0, 0, height])
+
+    for i in range(base_sides):
+        next_i = (i + 1) % base_sides
+        prism.vectors[2 * (base_sides - 2) + i] = [base_vertices[i], base_vertices[next_i], top_vertices[next_i]]
+        prism.vectors[2 * (base_sides - 2) + i + base_sides] = [base_vertices[i], top_vertices[next_i], top_vertices[i]]
+
+    return prism
