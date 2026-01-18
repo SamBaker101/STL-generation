@@ -50,31 +50,6 @@ def rotate_mesh(mesh_obj, axis, radians):
 
 ##### Generation Functions #####
 
-def generate_cube(size):
-    cube = create_empty_mesh(12) 
-    
-    #Theres probably a cleaner way to do this but going through the process seemed important
-    cube_faces = numpy.array([
-        [[0,0,0], [1, 0, 0], [1, 1, 0], [0, 1, 0]],
-        [[0,0,0], [1, 0, 0], [1, 0, 1], [0, 0, 1]],
-        [[0,0,0], [0, 1, 0], [0, 1, 1], [0, 0, 1]],
-        [[1,1,1], [0, 1, 1], [0, 0, 1], [1, 0, 1]],
-        [[1,1,1], [0, 1, 1], [0, 1, 0], [1, 1, 0]],
-        [[1,1,1], [1, 0, 1], [1, 0, 0], [1, 1, 0]]])
-
-    for face in cube_faces:
-        face[0] = face[0] * size
-        face[1] = face[1] * size
-        face[2] = face[2] * size
-        face[3] = face[3] * size
-        
-    i = 0;
-    for face in cube_faces:
-        cube.vectors[i]   = face[0:3]
-        cube.vectors[i+1] = [face[0], face[2], face[3]]
-        i += 2
-    
-    return cube
 
 def generate_prism(base_sides, side_length, height):
     if base_sides < 3:
@@ -129,3 +104,47 @@ def generate_pyramid(base_sides, side_length, height):
         pyramid.vectors[base_sides - 2 + i] = [base_vertices[i], base_vertices[next_i], apex]
 
     return pyramid
+
+def generate_tetrahedron(side_length):
+    return generate_pyramid(3, side_length, side_length * numpy.sqrt(6)/3)
+
+def generate_cube(size):
+    return generate_prism(4, size, size)
+
+def generate_octahedron(side_length):
+    num_facets = 8
+    base_sides = 4
+    height = (side_length * numpy.sqrt(2)) / 2
+    octahedron = create_empty_mesh(num_facets)
+
+    base_vertices = numpy.zeros((base_sides, 3))
+    base_vertices[0] = [0, 0, 0]
+    
+    for i in range(1, base_sides):
+        base_vertices[i] = [base_vertices[i-1][0] + (side_length * numpy.cos(2 * numpy.pi * i / base_sides)),
+                            base_vertices[i-1][1] + (side_length * numpy.sin(2 * numpy.pi * i / base_sides)),
+                            0]
+        
+    upper_apex = numpy.array([numpy.mean(base_vertices[:,0]), numpy.mean(base_vertices[:,1]), height])
+    lower_apex = numpy.array([numpy.mean(base_vertices[:,0]), numpy.mean(base_vertices[:,1]), - height])
+    
+    for i in range(base_sides):
+        next_i = (i + 1) % base_sides
+        octahedron.vectors[i]              = [base_vertices[i], base_vertices[next_i], upper_apex]
+        octahedron.vectors[base_sides + i] = [base_vertices[next_i], base_vertices[i], lower_apex]
+    return octahedron
+
+
+def generate_platonic(num_sides, side_length):
+    if num_sides == 4:
+        return generate_tetrahedron(side_length)
+    elif num_sides == 6:
+        return generate_cube(side_length)
+    elif num_sides == 8:
+        return generate_octahedron(side_length)
+    #elif num_sides == 12:
+        #return generate_dodecahedron(side_length) FIXME
+    #elif num_sides == 20:
+        #return generate_icosahedron(side_length) FIXME
+    else:
+        raise ValueError("Unsupported number of sides for Platonic solid.")
