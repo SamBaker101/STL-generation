@@ -134,6 +134,11 @@ def generate_octahedron(side_length):
         octahedron.vectors[base_sides + i] = [base_vertices[next_i], base_vertices[i], lower_apex]
     return octahedron
 
+def generate_dodecahedron(side_length):
+    raise NotImplementedError("Dodecahedron generation is not implemented yet.")
+
+def generate_icosahedron(side_length):
+    raise NotImplementedError("Icosahedron generation is not implemented yet.")
 
 def generate_platonic(num_sides, side_length):
     if num_sides == 4:
@@ -142,9 +147,9 @@ def generate_platonic(num_sides, side_length):
         return generate_cube(side_length)
     elif num_sides == 8:
         return generate_octahedron(side_length)
-    #elif num_sides == 12:
-        #return generate_dodecahedron(side_length) FIXME
-    #elif num_sides == 20:
-        #return generate_icosahedron(side_length) FIXME
+    elif num_sides == 12:
+        return generate_dodecahedron(side_length) 
+    elif num_sides == 20:
+        return generate_icosahedron(side_length) 
     else:
         raise ValueError("Unsupported number of sides for Platonic solid.")
