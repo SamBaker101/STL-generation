@@ -11,7 +11,7 @@ def main():
     #scale_mesh_non_uniform(mesh_data, [1.0, 2.0, 0.5])
     
     #mesh_data = generate_cube([5.0, 3.0, 1.0])
-    mesh_data = generate_prism(500, 0.1, 20)
+    mesh_data = generate_pyramid(50, 1, 20)
 
     detailed_print(mesh_data)
     save_stl(mesh_data, "./out/out_cube.stl")

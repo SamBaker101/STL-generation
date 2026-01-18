@@ -103,3 +103,29 @@ def generate_prism(base_sides, side_length, height):
         prism.vectors[2 * (base_sides - 2) + i + base_sides] = [base_vertices[i], top_vertices[next_i], top_vertices[i]]
 
     return prism
+
+def generate_pyramid(base_sides, side_length, height):
+    if base_sides < 3:
+        raise ValueError("Please provide a valid number of sides (3 or more) for the pyramid base.")
+    
+    num_facets = base_sides + (base_sides - 2)
+    pyramid = create_empty_mesh(num_facets)
+
+    base_vertices = numpy.zeros((base_sides, 3))
+    base_vertices[0] = [0, 0, 0]
+    
+    for i in range(1, base_sides):
+        base_vertices[i] = [base_vertices[i-1][0] + (side_length * numpy.cos(2 * numpy.pi * i / base_sides)),
+                            base_vertices[i-1][1] + (side_length * numpy.sin(2 * numpy.pi * i / base_sides)),
+                            0]
+        
+    apex = numpy.array([numpy.mean(base_vertices[:,0]), numpy.mean(base_vertices[:,1]), height])
+    
+    for i in range(base_sides - 2):
+        pyramid.vectors[i]                = [base_vertices[0], base_vertices[i + 1], base_vertices[i + 2]]
+
+    for i in range(base_sides):
+        next_i = (i + 1) % base_sides
+        pyramid.vectors[base_sides - 2 + i] = [base_vertices[i], base_vertices[next_i], apex]
+
+    return pyramid
