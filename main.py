@@ -10,10 +10,10 @@ def main():
     #rotate_mesh(mesh_data, [0.0, 0.0, 1.0], numpy.radians(45))
     #scale_mesh_non_uniform(mesh_data, [1.0, 2.0, 0.5])
     
-    generate_cube([5.0, 3.0, 1.0])
+    mesh_data = generate_cube([5.0, 3.0, 1.0])
 
-    #detailed_print(mesh_data)
-    #save_stl(mesh_data, "./out/out_cube.stl")
+    detailed_print(mesh_data)
+    save_stl(mesh_data, "./out/out_cube.stl")
 
 if __name__ == "__main__":
     main()

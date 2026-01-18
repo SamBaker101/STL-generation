@@ -67,6 +67,10 @@ def generate_cube(size):
         face[2] = face[2] * size
         face[3] = face[3] * size
         
-    print(cube_faces)
-
+    i = 0;
+    for face in cube_faces:
+        cube.vectors[i] = face[0:3]
+        cube.vectors[i+1] = [face[0], face[2], face[3]]
+        i += 2
+    
     return cube
