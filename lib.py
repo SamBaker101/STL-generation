@@ -51,8 +51,9 @@ def rotate_mesh(mesh_obj, axis, radians):
 ##### Generation Functions #####
 
 def generate_cube(size):
-    cube = create_empty_mesh(12)  # A cube has 12 triangular facets
+    cube = create_empty_mesh(12) 
     
+    #Theres probably a cleaner way to do this but going through the process seemed important
     cube_faces = numpy.array([
         [[0,0,0], [1, 0, 0], [1, 1, 0], [0, 1, 0]],
         [[0,0,0], [1, 0, 0], [1, 0, 1], [0, 0, 1]],
@@ -69,8 +70,25 @@ def generate_cube(size):
         
     i = 0;
     for face in cube_faces:
-        cube.vectors[i] = face[0:3]
+        cube.vectors[i]   = face[0:3]
         cube.vectors[i+1] = [face[0], face[2], face[3]]
         i += 2
     
     return cube
+
+def generate_prism(base_sides, side_length, height):
+    if base_sides < 3:
+        raise ValueError("Please provide a valid number of sides (3 or more) for the prism base.")
+    
+    num_facets = base_sides * 2 + (base_sides - 2) * 2
+    prism = create_empty_mesh(num_facets)
+
+    base_vertices = numpy.zeros((base_sides, 3))
+    base_vertices[0] = [0, 0, 0]
+    
+    for i in range(1, base_sides):
+        base_vertices[i] = [base_vertices[i-1][0] + (side_length * numpy.cos(2 * numpy.pi * i / base_sides)),
+                            base_vertices[i-1][1] + (side_length * numpy.sin(2 * numpy.pi * i / base_sides)),
+                            0]
+        
+    print(base_vertices)
