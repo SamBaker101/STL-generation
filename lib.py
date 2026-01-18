@@ -91,4 +91,7 @@ def generate_prism(base_sides, side_length, height):
                             base_vertices[i-1][1] + (side_length * numpy.sin(2 * numpy.pi * i / base_sides)),
                             0]
         
+    top_vertices = base_vertices + numpy.array([0, 0, height]) 
+    
     print(base_vertices)
+    print(top_vertices)
