@@ -63,7 +63,9 @@ def fibonacci_sphere(samples):
 def plot_points(points):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(points[:,0], points[:,1], points[:,2])
+    for i in range(points.size // 3):
+        ax.scatter(points[i][0], points[i][1], points[i][2], color='b')
+        ax.text(points[i][0], points[i][1], points[i][2], f'{i}', size=10, zorder=1, color='k')
     plt.show()
 
 ##### Manipulation Functions #####
@@ -160,30 +162,28 @@ def generate_dodecahedron(side_length): #FIXME: Not working
 
     d_vert = numpy.zeros((20, 3))
     d_vert = fibonacci_sphere(20) * (side_length / numpy.sqrt(3))
-    
-    #This is ungraceful
-    #This also doesn't work... FIXME:
-    #dodecahedron_faces = [
-    #    [d_vert[0], d_vert[1], d_vert[2],  d_vert[3], d_vert[4]],
-    #]
-
-    #for i, face in enumerate(dodecahedron_faces):
-    #    for j in range(base_sides - 2):
-    #for i in range(num_facets):
-            #dodecahedron.vectors[i] = d_vert[] , face[j + 1], face[j + 2]
 
     return dodecahedron
 
 def generate_sphere(num_facets, radius): #FIXME: Not working properly
-    sphere = create_empty_mesh(num_facets)
+    sphere = create_empty_mesh(num_facets+1)
     points = fibonacci_sphere(num_facets) * radius
+    print(points.size // 3)
     print(points)
     plot_points(points)
-    for i in range(num_facets):
-            sphere.vectors[i] = points[i], points[(i + 1) % num_facets], points[(i + 2) % num_facets]
+    #for i in range(num_facets):
+    #        sphere.vectors[i] = points[i], points[(i + 1) % num_facets], points[(i + 2) % num_facets]
+    #return sphere
+    sphere.vectors = [[points[0], points[2], points[1]],
+                      [points[0], points[1], points[3]],
+                      [points[0], points[3], points[2]],
+                      [points[1], points[2], points[4]],
+                      [points[1], points[4], points[3]],
+                      [points[2], points[3], points[4]],
+    ]
+
 
     return sphere
-
 
 def generate_icosahedron(side_length):
     raise NotImplementedError("Icosahedron generation is not implemented yet.")
