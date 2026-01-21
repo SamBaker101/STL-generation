@@ -1,5 +1,6 @@
 import numpy
 from stl import mesh
+import matplotlib.pyplot as plt
 
 ##### Basic STL Operations #####
 
@@ -58,6 +59,12 @@ def fibonacci_sphere(samples):
         points.append((x, y, z))
 
     return numpy.array(points)
+
+def plot_points(points):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(points[:,0], points[:,1], points[:,2])
+    plt.show()
 
 ##### Manipulation Functions #####
 
@@ -158,17 +165,6 @@ def generate_dodecahedron(side_length): #FIXME: Not working
     #This also doesn't work... FIXME:
     #dodecahedron_faces = [
     #    [d_vert[0], d_vert[1], d_vert[2],  d_vert[3], d_vert[4]],
-        #[d_vert[0], d_vert[5], d_vert[10], d_vert[6], d_vert[1]],
-        #[d_vert[1], d_vert[6], d_vert[11], d_vert[7], d_vert[2]],
-        #[d_vert[2], d_vert[7], d_vert[12], d_vert[8], d_vert[3]],
-        #[d_vert[3], d_vert[8], d_vert[13], d_vert[9], d_vert[4]],
-        #[d_vert[4], d_vert[9], d_vert[14], d_vert[5], d_vert[0]],
-        #[d_vert[15], d_vert[10], d_vert[5 ], d_vert[14], d_vert[19]],
-        #[d_vert[16], d_vert[11], d_vert[6 ], d_vert[10], d_vert[15]],
-        #[d_vert[17], d_vert[12], d_vert[7 ], d_vert[11], d_vert[16]],
-        #[d_vert[18], d_vert[13], d_vert[8 ], d_vert[12], d_vert[17]],
-        #[d_vert[19], d_vert[14], d_vert[9 ], d_vert[13], d_vert[18]],
-        #[d_vert[19], d_vert[18], d_vert[17], d_vert[16], d_vert[15]]
     #]
 
     #for i, face in enumerate(dodecahedron_faces):
@@ -181,7 +177,8 @@ def generate_dodecahedron(side_length): #FIXME: Not working
 def generate_sphere(num_facets, radius): #FIXME: Not working properly
     sphere = create_empty_mesh(num_facets)
     points = fibonacci_sphere(num_facets) * radius
-    
+    print(points)
+    plot_points(points)
     for i in range(num_facets):
             sphere.vectors[i] = points[i], points[(i + 1) % num_facets], points[(i + 2) % num_facets]
 
