@@ -30,6 +30,35 @@ def detailed_print(mesh_obj):
         print(f"  Vertex 2: {vector[1]}")
         print(f"  Vertex 3: {vector[2]}")
 
+##### Math Helpers #####
+
+def get_base_polygon_vertices(sides, side_length):
+    vertices = numpy.zeros((sides, 3))
+    vertices[0] = [0, 0, 0]
+    
+    for i in range(1, sides):
+        vertices[i] = [vertices[i-1][0] + (side_length * numpy.cos(2 * numpy.pi * i / sides)),
+                       vertices[i-1][1] + (side_length * numpy.sin(2 * numpy.pi * i / sides)),
+                       0]
+    return vertices
+
+def fibonacci_sphere(samples):
+    points = []
+    phi = numpy.pi * (3. - numpy.sqrt(5.))  # golden angle in radians
+
+    for i in range(samples):
+        y = 1 - (i / float(samples - 1)) * 2  # y goes from 1 to -1
+        radius = numpy.sqrt(1 - y * y)  # radius at y
+
+        theta = phi * i  # golden angle increment
+
+        x = numpy.cos(theta) * radius
+        z = numpy.sin(theta) * radius
+
+        points.append((x, y, z))
+
+    return numpy.array(points)
+
 ##### Manipulation Functions #####
 
 def scale_mesh(mesh_obj, scale_factor):
@@ -49,17 +78,6 @@ def rotate_mesh(mesh_obj, axis, radians):
     return mesh_obj.rotate(axis,radians)
 
 ##### Generation Functions #####
-
-
-def get_base_polygon_vertices(sides, side_length):
-    base_vertices = numpy.zeros((base_sides, 3))
-    base_vertices[0] = [0, 0, 0]
-    
-    for i in range(1, base_sides):
-        base_vertices[i] = [base_vertices[i-1][0] + (side_length * numpy.cos(2 * numpy.pi * i / base_sides)),
-                            base_vertices[i-1][1] + (side_length * numpy.sin(2 * numpy.pi * i / base_sides)),
-                            0]
-    return vertices
 
 def generate_prism(base_sides, side_length, height):
     if base_sides < 3:
@@ -127,9 +145,37 @@ def generate_octahedron(side_length):
     return octahedron
 
 def generate_dodecahedron(side_length):
-    num_facets = 12
     base_sides = 5
+    num_sides = 12
+    num_facets = 12 * (base_sides - 2)
+    
+    dodecahedron = create_empty_mesh(num_facets)
 
+    d_vert = numpy.zeros((20, 3))
+    d_vert = fibonacci_sphere(20) * (side_length / numpy.sqrt(3))
+    
+    #This is ungraceful
+    #This also doesn't work... FIXME:
+    dodecahedron_faces = [
+        [d_vert[0], d_vert[1], d_vert[2],  d_vert[3], d_vert[4],],
+        [d_vert[0], d_vert[5], d_vert[10], d_vert[6], d_vert[1],],
+        [d_vert[1], d_vert[6], d_vert[11], d_vert[7], d_vert[2],],
+        [d_vert[2], d_vert[7], d_vert[12], d_vert[8], d_vert[3],],
+        [d_vert[3], d_vert[8], d_vert[13], d_vert[9], d_vert[4],],
+        [d_vert[4], d_vert[9], d_vert[14], d_vert[5], d_vert[0],],
+        [d_vert[15], d_vert[10], d_vert[5 ], d_vert[14], d_vert[19]],
+        [d_vert[16], d_vert[11], d_vert[6 ], d_vert[10], d_vert[15]],
+        [d_vert[17], d_vert[12], d_vert[7 ], d_vert[11], d_vert[16]],
+        [d_vert[18], d_vert[13], d_vert[8 ], d_vert[12], d_vert[17]],
+        [d_vert[19], d_vert[14], d_vert[9 ], d_vert[13], d_vert[18]],
+        [d_vert[19], d_vert[18], d_vert[17], d_vert[16], d_vert[15]]
+    ]
+
+    for i, face in enumerate(dodecahedron_faces):
+        for j in range(base_sides - 2):
+            dodecahedron.vectors[i * (base_sides - 2) + j] = face[0] , face[j + 1], face[j + 2]
+
+    return dodecahedron
 
 
 def generate_icosahedron(side_length):
