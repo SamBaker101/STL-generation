@@ -144,7 +144,7 @@ def generate_octahedron(side_length):
         octahedron.vectors[base_sides + i] = [base_vertices[next_i], base_vertices[i], lower_apex]
     return octahedron
 
-def generate_dodecahedron(side_length):
+def generate_dodecahedron(side_length): #FIXME: Not working
     base_sides = 5
     num_sides = 12
     num_facets = 12 * (base_sides - 2)
@@ -156,26 +156,36 @@ def generate_dodecahedron(side_length):
     
     #This is ungraceful
     #This also doesn't work... FIXME:
-    dodecahedron_faces = [
-        [d_vert[0], d_vert[1], d_vert[2],  d_vert[3], d_vert[4],],
-        [d_vert[0], d_vert[5], d_vert[10], d_vert[6], d_vert[1],],
-        [d_vert[1], d_vert[6], d_vert[11], d_vert[7], d_vert[2],],
-        [d_vert[2], d_vert[7], d_vert[12], d_vert[8], d_vert[3],],
-        [d_vert[3], d_vert[8], d_vert[13], d_vert[9], d_vert[4],],
-        [d_vert[4], d_vert[9], d_vert[14], d_vert[5], d_vert[0],],
-        [d_vert[15], d_vert[10], d_vert[5 ], d_vert[14], d_vert[19]],
-        [d_vert[16], d_vert[11], d_vert[6 ], d_vert[10], d_vert[15]],
-        [d_vert[17], d_vert[12], d_vert[7 ], d_vert[11], d_vert[16]],
-        [d_vert[18], d_vert[13], d_vert[8 ], d_vert[12], d_vert[17]],
-        [d_vert[19], d_vert[14], d_vert[9 ], d_vert[13], d_vert[18]],
-        [d_vert[19], d_vert[18], d_vert[17], d_vert[16], d_vert[15]]
-    ]
+    #dodecahedron_faces = [
+    #    [d_vert[0], d_vert[1], d_vert[2],  d_vert[3], d_vert[4]],
+        #[d_vert[0], d_vert[5], d_vert[10], d_vert[6], d_vert[1]],
+        #[d_vert[1], d_vert[6], d_vert[11], d_vert[7], d_vert[2]],
+        #[d_vert[2], d_vert[7], d_vert[12], d_vert[8], d_vert[3]],
+        #[d_vert[3], d_vert[8], d_vert[13], d_vert[9], d_vert[4]],
+        #[d_vert[4], d_vert[9], d_vert[14], d_vert[5], d_vert[0]],
+        #[d_vert[15], d_vert[10], d_vert[5 ], d_vert[14], d_vert[19]],
+        #[d_vert[16], d_vert[11], d_vert[6 ], d_vert[10], d_vert[15]],
+        #[d_vert[17], d_vert[12], d_vert[7 ], d_vert[11], d_vert[16]],
+        #[d_vert[18], d_vert[13], d_vert[8 ], d_vert[12], d_vert[17]],
+        #[d_vert[19], d_vert[14], d_vert[9 ], d_vert[13], d_vert[18]],
+        #[d_vert[19], d_vert[18], d_vert[17], d_vert[16], d_vert[15]]
+    #]
 
-    for i, face in enumerate(dodecahedron_faces):
-        for j in range(base_sides - 2):
-            dodecahedron.vectors[i * (base_sides - 2) + j] = face[0] , face[j + 1], face[j + 2]
+    #for i, face in enumerate(dodecahedron_faces):
+    #    for j in range(base_sides - 2):
+    #for i in range(num_facets):
+            #dodecahedron.vectors[i] = d_vert[] , face[j + 1], face[j + 2]
 
     return dodecahedron
+
+def generate_sphere(num_facets, radius): #FIXME: Not working properly
+    sphere = create_empty_mesh(num_facets)
+    points = fibonacci_sphere(num_facets) * radius
+    
+    for i in range(num_facets):
+            sphere.vectors[i] = points[i], points[(i + 1) % num_facets], points[(i + 2) % num_facets]
+
+    return sphere
 
 
 def generate_icosahedron(side_length):
