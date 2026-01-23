@@ -82,11 +82,10 @@ def stereographic_projection(points_3d, radius=1.0):
     for point in points_3d:
         x, y, z = point
         if z == radius:
-            projected_points.append((float('inf'), float('inf')))
-        else:
-            xp = radius * x / (radius - z)
-            yp = radius * y / (radius - z)
-            projected_points.append((xp, yp))
+            z = radius*0.99
+        xp = radius * x / (radius - z)
+        yp = radius * y / (radius - z)
+        projected_points.append((xp, yp))
     return numpy.array(projected_points)
 
 def delaunay_triangulation(points_2d):
@@ -193,17 +192,18 @@ def generate_dodecahedron(side_length): #FIXME: Not working
 
 def generate_sphere(resolution, radius):
     points = fibonacci_sphere(resolution) * radius 
-
+    #plot_points_3d(points)
+    
     # Map points onto 2D plane for easier triangulation
     projected_points = stereographic_projection(points, radius)
-
+    
     # Deluney triangulation 
     triangles = delaunay_triangulation(projected_points)
     sphere = create_empty_mesh(triangles.shape[0])
-
+    print(triangles)
+    plot_points_2d(projected_points)
     # Invert points to create facets and build mesh
     for i, triangle in enumerate(triangles):
-        print(i)
         sphere.vectors[i] = [points[triangle[2]], points[triangle[1]], points[triangle[0]]]
 
     return sphere

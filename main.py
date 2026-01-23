@@ -13,9 +13,9 @@ def main():
     
     #mesh_data = generate_cube([5.0, 3.0, 1.0])
     #mesh_data = generate_pyramid(50, 1, 20)
-    mesh_data = generate_sphere(50, 1.0)
+    mesh_data = generate_sphere(12, 1.0)
 
-    #detailed_print(mesh_data)
+    detailed_print(mesh_data)
     save_stl(mesh_data, "./out/out_cube.stl")
 
 if __name__ == "__main__":
