@@ -1,6 +1,7 @@
 import numpy
 from stl import mesh
 import matplotlib.pyplot as plt
+from scipy.spatial import Delaunay
 
 ##### Basic STL Operations #####
 
@@ -89,8 +90,9 @@ def stereographic_projection(points_3d, radius=1.0):
     return numpy.array(projected_points)
 
 def delaunay_triangulation(points_2d):
-    print("Delaunay triangulation not implemented yet.")
-    return []
+    #TODO: I'd like to try implementing this myself  
+    out = Delaunay(points_2d)
+    return out.simplices
 
 ##### Manipulation Functions #####
 
@@ -189,18 +191,20 @@ def generate_dodecahedron(side_length): #FIXME: Not working
 
     return dodecahedron
 
-def generate_sphere(num_facets, radius): #FIXME: Not working properly
-    sphere = create_empty_mesh(num_facets+2)
-    points = fibonacci_sphere(num_facets) * radius
-    print(points.size // 3)
-    print(points)
-
+def generate_sphere(num_facets, radius):
+    sphere = create_empty_mesh(num_facets)
+    points = fibonacci_sphere(num_facets) * radius # FIXME: How does num points relate to num facets?
+    
     # Map points onto 2D plane for easier triangulation
     projected_points = stereographic_projection(points, radius)
-    plot_points_2d(projected_points)
 
     # Deluney triangulation 
-    # Invert points to create facets
+    triangles = delaunay_triangulation(projected_points)
+
+    # Invert points to create facets and build mesh
+    for i, triangle in enumerate(triangles):
+        print(i)
+        sphere.vectors[i] = [points[triangle[2]], points[triangle[1]], points[triangle[0]]]
 
     return sphere
 
