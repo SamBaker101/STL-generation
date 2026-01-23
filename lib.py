@@ -191,15 +191,15 @@ def generate_dodecahedron(side_length): #FIXME: Not working
 
     return dodecahedron
 
-def generate_sphere(num_facets, radius):
-    sphere = create_empty_mesh(num_facets)
-    points = fibonacci_sphere(num_facets) * radius # FIXME: How does num points relate to num facets?
-    
+def generate_sphere(resolution, radius):
+    points = fibonacci_sphere(resolution) * radius 
+
     # Map points onto 2D plane for easier triangulation
     projected_points = stereographic_projection(points, radius)
 
     # Deluney triangulation 
     triangles = delaunay_triangulation(projected_points)
+    sphere = create_empty_mesh(triangles.shape[0])
 
     # Invert points to create facets and build mesh
     for i, triangle in enumerate(triangles):
