@@ -33,6 +33,22 @@ def detailed_print(mesh_obj):
 
 ##### Math Helpers #####
 
+def plot_points_3d(points):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    for i in range(points.size // 3):
+        ax.scatter(points[i][0], points[i][1], points[i][2], color='b')
+        ax.text(points[i][0], points[i][1], points[i][2], f'{i}', size=10, zorder=1, color='k')
+    plt.show()
+
+def plot_points_2d(points):
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    for i in range(points.size // 2):
+        ax.scatter(points[i][0], points[i][1], color='b')
+        ax.text(points[i][0], points[i][1], f'{i}', size=10, zorder=1, color='k')
+    plt.show()
+
 def get_base_polygon_vertices(sides, side_length):
     vertices = numpy.zeros((sides, 3))
     vertices[0] = [0, 0, 0]
@@ -60,13 +76,17 @@ def fibonacci_sphere(samples):
 
     return numpy.array(points)
 
-def plot_points(points):
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    for i in range(points.size // 3):
-        ax.scatter(points[i][0], points[i][1], points[i][2], color='b')
-        ax.text(points[i][0], points[i][1], points[i][2], f'{i}', size=10, zorder=1, color='k')
-    plt.show()
+def stereographic_projection(points_3d, radius=1.0):
+    projected_points = []
+    for point in points_3d:
+        x, y, z = point
+        if z == radius:
+            projected_points.append((float('inf'), float('inf')))
+        else:
+            xp = radius * x / (radius - z)
+            yp = radius * y / (radius - z)
+            projected_points.append((xp, yp))
+    return numpy.array(projected_points)
 
 ##### Manipulation Functions #####
 
@@ -166,22 +186,17 @@ def generate_dodecahedron(side_length): #FIXME: Not working
     return dodecahedron
 
 def generate_sphere(num_facets, radius): #FIXME: Not working properly
-    sphere = create_empty_mesh(num_facets+1)
+    sphere = create_empty_mesh(num_facets+2)
     points = fibonacci_sphere(num_facets) * radius
     print(points.size // 3)
     print(points)
-    plot_points(points)
-    #for i in range(num_facets):
-    #        sphere.vectors[i] = points[i], points[(i + 1) % num_facets], points[(i + 2) % num_facets]
-    #return sphere
-    sphere.vectors = [[points[0], points[2], points[1]],
-                      [points[0], points[1], points[3]],
-                      [points[0], points[3], points[2]],
-                      [points[1], points[2], points[4]],
-                      [points[1], points[4], points[3]],
-                      [points[2], points[3], points[4]],
-    ]
 
+    # Map points onto 2D plane for easier triangulation
+    projected_points = stereographic_projection(points, radius)
+    plot_points_2d(projected_points)
+
+    # Deluneay triangulation 
+    # Invert points to create facets
 
     return sphere
 
