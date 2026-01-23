@@ -88,6 +88,10 @@ def stereographic_projection(points_3d, radius=1.0):
             projected_points.append((xp, yp))
     return numpy.array(projected_points)
 
+def delaunay_triangulation(points_2d):
+    print("Delaunay triangulation not implemented yet.")
+    return []
+
 ##### Manipulation Functions #####
 
 def scale_mesh(mesh_obj, scale_factor):
@@ -195,7 +199,7 @@ def generate_sphere(num_facets, radius): #FIXME: Not working properly
     projected_points = stereographic_projection(points, radius)
     plot_points_2d(projected_points)
 
-    # Deluneay triangulation 
+    # Deluney triangulation 
     # Invert points to create facets
 
     return sphere
